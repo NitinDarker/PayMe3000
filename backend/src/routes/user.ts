@@ -1,7 +1,7 @@
-const { Router } = require("express");
+import { Router } from "express";
 const userRouter = Router();
 
 userRouter.get("/login", () => {});
 userRouter.get("/logout", () => {});
 
-module.exports = userRouter;
+export default userRouter;

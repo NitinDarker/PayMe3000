@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 
 dotenv.config();
 const mongo_url = process.env.MONGODB_URI;
@@ -48,4 +48,4 @@ const userSchema = new mongoose.Schema({
 
 const userModel = mongoose.model("user", userSchema);
 
-module.exports = { userModel };
+export { userModel };
