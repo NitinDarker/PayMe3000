@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const { Schema, Model } = mongoose;
 
 dotenv.config();
 const mongo_url = process.env.MONGODB_URI;
@@ -10,13 +9,43 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err: Error) => console.log("MongoDB Connection error: ", err));
 
-const userSchema = new Schema({
-  username: String,
-  password: String,
-  firstName: String,
-  lastName: String
-})
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    minLength: 3,
+    maxLength: 30,
+  },
+  phone: {
+    type: Number,
+    required: true,
+    unique: true,
+    trim: true,
+    length: 10,
+  },
+  password: {
+    type: String,
+    required: true,
+    minLength: 6,
+    maxlength: 30,
+  },
+  firstName: {
+    type: String,
+    required: true,
+    trim: true,
+    maxLength: 30,
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true,
+    maxLength: 30,
+  },
+});
 
-const userModel = mongoose.model('user', userSchema)
+const userModel = mongoose.model("user", userSchema);
 
-module.exports = {userModel}
+module.exports = { userModel };
