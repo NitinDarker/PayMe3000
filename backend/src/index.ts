@@ -8,10 +8,11 @@ import dotenv from "dotenv";
 import cors from "cors";
 
 dotenv.config({
+  path: "../.env",
   override: false,
   debug: false,
   quiet: true,
-  encoding: "utf-8",
+  encoding: "utf-8"
 });
 const PORT = process.env.PORT;
 
@@ -44,7 +45,7 @@ app.use(
       success: false,
       error: "Sorry! We have encountered and error!\n" + err,
     });
-    console.log(err);
+    console.error(err);
   }
 );
 

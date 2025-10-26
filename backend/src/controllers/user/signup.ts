@@ -5,7 +5,7 @@ import { z } from "zod";
 import { userModel } from "../../db/index.js";
 
 const jwtKey = process.env.JWT_KEY as string;
-if (!jwtKey) throw new Error("Missing JWT_KEY env var");
+// if (!jwtKey) throw new Error("Missing JWT_KEY env var");
 
 const goodUser = z.object({
   username: z
@@ -44,7 +44,7 @@ export default async function signup(req: Request, res: Response) {
     });
     await newUser.save();
 
-    console.log("User saved successfully");
+    console.log("User saved successfully, username: ", username);
 
     const token = jwt.sign(
       { userId: newUser._id, username: newUser.username },
