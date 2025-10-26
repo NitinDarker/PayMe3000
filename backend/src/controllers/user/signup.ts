@@ -1,19 +1,22 @@
 import { type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv";
 import { z } from "zod";
 import { userModel } from "../../db/index.js";
 
-dotenv.config();
 const jwtKey = process.env.JWT_KEY as string;
+if (!jwtKey) throw new Error("Missing JWT_KEY env var");
 
 const goodUser = z.object({
-  username: z.string().toLowerCase(),
+  username: z
+    .string()
+    .min(3)
+    .max(30)
+    .transform((s) => s.toLowerCase()),
   phone: z.number().min(10),
-  password: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
+  password: z.string().min(8, "Password must be at least 8 chars"),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
 });
 
 export default async function signup(req: Request, res: Response) {
@@ -21,34 +24,44 @@ export default async function signup(req: Request, res: Response) {
   const validateUser = goodUser.safeParse(user);
 
   if (!validateUser.success) {
+    console.error("Zod Validation Failed:", validateUser.error.format());
     return res.status(400).json({
       success: false,
-      error: `Bad user object: ${validateUser.error.format()}`,
+      error: `Bad user object`,
     });
   }
 
-  const hashedPassword = await bcrypt.hash(user.password, 10);
-  user["password"] = hashedPassword;
-  const newUser = new userModel({
-    ...user,
-  });
+  const { username, phone, password, firstName, lastName } = validateUser.data;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new userModel({
+      username,
+      phone,
+      password: hashedPassword,
+      firstName,
+      lastName,
+    });
     await newUser.save();
+
+    console.log("User saved successfully");
+
+    const token = jwt.sign(
+      { userId: newUser._id, username: newUser.username },
+      jwtKey
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      token: token,
+    });
   } catch (e: any) {
+    console.log("Signup error: ", e.errorResponse.errmsg);
+
     return res.status(400).json({
       success: false,
-      error: e.errorResponse.errmsg,
+      error: "User already exists",
     });
   }
-
-  console.log("User saved successfully");
-
-  const token = jwt.sign({ username: newUser.username }, jwtKey);
-
-  return res.status(200).json({
-    success: true,
-    message: "User created successfully",
-    token: token,
-  });
 }
