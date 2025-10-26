@@ -1,17 +1,52 @@
-import express from "express";
+import express, {
+  type ErrorRequestHandler,
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 
-dotenv.config();
+dotenv.config({
+  override: false,
+  debug: false,
+  quiet: true,
+  encoding: "utf-8",
+});
 const PORT = process.env.PORT;
 
 import { router } from "./routes/index.js";
 
 const app = express();
 
-app.use(cors())
-app.use(express.json())
-app.use("/api/", router);
+app.use(cors());
+app.use(express.json());
+
+app.use("/api", router);
+
+// Catch-All Middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.status(404).json({
+    success: false,
+    error: "Route Not Found",
+  });
+});
+
+// Error Handling Middleware
+app.use(
+  (
+    err: ErrorRequestHandler,
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    res.status(500).send({
+      success: false,
+      error: "Sorry! We have encountered and error!\n" + err,
+    });
+    console.log(err);
+  }
+);
 
 app.listen(PORT, () => {
   console.log("Listening on port", PORT);
