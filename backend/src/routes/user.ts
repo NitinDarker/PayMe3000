@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { signup, signin, update } from "../controllers/user/index.js";
-import userAuth from "../middlewares/auth.js";
+import { signup, signin, update, bulk } from "../controllers/user/index.js";
+import { userAuth } from "../middlewares/index.js";
 const userRouter = Router();
 
-userRouter.use("/signup", signup);
-userRouter.use("/signin", signin);
-userRouter.use("/update", userAuth, update)
+userRouter.post("/signup", signup);
+userRouter.post("/signin", signin);
+userRouter.post("/update", userAuth, update);
+userRouter.get("/bulk", userAuth, bulk);
 
 export default userRouter;
