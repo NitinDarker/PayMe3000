@@ -5,7 +5,6 @@ import { z } from "zod";
 import { userModel } from "../../db/index.js";
 
 const jwtKey = process.env.JWT_KEY as string;
-// if (!jwtKey) throw new Error("Missing JWT_KEY env var");
 
 const goodUser = z.object({
   username: z
