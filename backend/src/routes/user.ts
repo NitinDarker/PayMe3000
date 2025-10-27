@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { signup } from "../controllers/user/index.js";
-import signin from "../controllers/user/signin.js";
+import { signup, signin, update } from "../controllers/user/index.js";
+import userAuth from "../middlewares/auth.js";
 const userRouter = Router();
 
 userRouter.use("/signup", signup);
-userRouter.post("/signin", signin);
-userRouter.post("/signout", () => {});
+userRouter.use("/signin", signin);
+userRouter.use("/update", userAuth, update)
 
 export default userRouter;

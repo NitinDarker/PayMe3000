@@ -1,12 +1,4 @@
-import express, {
-  type ErrorRequestHandler,
-  type NextFunction,
-  type Request,
-  type Response,
-} from "express";
 import dotenv from "dotenv";
-import cors from "cors";
-
 dotenv.config({
   path: "../.env",
   override: false,
@@ -14,6 +6,15 @@ dotenv.config({
   quiet: true,
   encoding: "utf-8"
 });
+
+import express, {
+  type ErrorRequestHandler,
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
+import cors from "cors";
+
 const PORT = process.env.PORT;
 
 import { router } from "./routes/index.js";
