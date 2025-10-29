@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { z } from "zod";
 import { userModel } from "../../db/index.js";
+import createAccount from "../account/createAccount.js";
 
 const jwtKey = process.env.JWT_KEY as string;
 
@@ -41,9 +42,11 @@ export default async function signup(req: Request, res: Response) {
       firstName,
       lastName,
     });
-    await newUser.save();
+    const user = await newUser.save();
 
     console.log("User saved successfully, username: ", username);
+
+    createAccount(user._id);
 
     const token = jwt.sign(
       { userId: newUser._id, username: newUser.username },
@@ -57,7 +60,12 @@ export default async function signup(req: Request, res: Response) {
     });
   } catch (e: any) {
     console.log("Signup error: ", e.errorResponse.errmsg);
-
+    if (e === "Cannot create user account") {
+      return res.status(400).json({
+        success: false,
+        error: "Error while creating account",
+      });
+    }
     return res.status(400).json({
       success: false,
       error: "User already exists",

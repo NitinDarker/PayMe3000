@@ -5,7 +5,7 @@ export default async function getBalance(req: Request, res: Response) {
   const userId = req.id;
 
   try {
-    const foundAccount = await accountModel.findById(userId);
+    const foundAccount = await accountModel.findOne({ userId });
     res.status(200).json({
       success: true,
       message: foundAccount?.balance,
