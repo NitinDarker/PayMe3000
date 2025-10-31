@@ -10,7 +10,7 @@ export default async function transferMoney(req: Request, res: Response) {
   const userId = req.id;
   try {
     const fromAccount = await accountModel.findOne({ userId });
-    if (!fromAccount || fromAccount.balance! < amount) {
+    if (!fromAccount || fromAccount.balance! < amount*100) {
       await session.abortTransaction();
       return res.status(400).json({
         success: false,
@@ -27,11 +27,11 @@ export default async function transferMoney(req: Request, res: Response) {
     }
 
     await accountModel
-      .updateOne({ userId }, { $inc: { balance: -amount } })
+      .updateOne({ userId }, { $inc: { balance: -(amount*100) } })
       .session(session);
 
     await accountModel
-      .updateOne({ userId: to }, { $inc: { balance: +amount } })
+      .updateOne({ userId: to }, { $inc: { balance: +(amount*100) } })
       .session(session);
 
     await session.commitTransaction();

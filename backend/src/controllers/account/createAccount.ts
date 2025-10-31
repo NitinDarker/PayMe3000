@@ -6,7 +6,7 @@ export default async function createAccount(userId: mongoose.Types.ObjectId) {
   try {
     await accountModel.create({
       userId: userId,
-      balance: Math.floor(Math.random() * 1000 + 100),
+      balance: Math.floor(Math.random() * 100000 + 1000),
     });
   } catch (err) {
     throw new Error("Cannot create user account");

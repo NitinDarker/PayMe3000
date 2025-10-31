@@ -6,9 +6,10 @@ export default async function getBalance(req: Request, res: Response) {
 
   try {
     const foundAccount = await accountModel.findOne({ userId });
+    const balance = (foundAccount?.balance!) / 100;
     res.status(200).json({
       success: true,
-      message: foundAccount?.balance,
+      message: balance,
     });
   } catch (err) {
     console.log(err);
