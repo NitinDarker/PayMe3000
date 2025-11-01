@@ -13,21 +13,17 @@ import { DotBackgroundDemo } from '../ui/dotBackground'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-export default function Signup () {
+export default function Signin () {
   const [cred, setCred] = useState({
     username: '',
-    phone: Number(),
-    firstName: '',
-    lastName: '',
     password: ''
   })
   async function signupHandler () {
     const payload = {
       ...cred,
-      phone: Number(cred.phone)
     }
     const response = await axios.post(
-      'http://localhost:3000/api/user/signup',
+      'http://localhost:3000/api/user/signin',
       payload
     )
     console.log(response.data.message)
@@ -40,9 +36,9 @@ export default function Signup () {
   return (
     <>
       <DotBackgroundDemo>
-        <Card className='w-md h-auto bg-neutral-900 text-white border-neutral-700'>
+        <Card className='w-sm h-auto bg-neutral-900 text-white border-neutral-700'>
           <CardHeader>
-            <CardTitle>Create an Account</CardTitle>
+            <CardTitle>Login</CardTitle>
           </CardHeader>
           <CardContent className='flex gap-6 flex-col'>
             <div>
@@ -52,33 +48,6 @@ export default function Signup () {
                 placeholder='Enter your username'
                 onChange={handleChange}
               />
-            </div>
-            <div>
-              <Label htmlFor='number'>Phone Number</Label>
-              <Input
-                id='phone'
-                placeholder='Phone'
-                onChange={handleChange}
-                type='number'
-              />
-            </div>
-            <div className='grid grid-cols-2 gap-5'>
-              <div>
-                <Label htmlFor='firstName'>First Name</Label>
-                <Input
-                  id='firstName'
-                  placeholder='First Name'
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <Label htmlFor='lastName'>Last Name</Label>
-                <Input
-                  id='lastName'
-                  placeholder='Last Name'
-                  onChange={handleChange}
-                />
-              </div>
             </div>
             <div>
               <Label htmlFor='password'>Password</Label>
@@ -97,11 +66,11 @@ export default function Signup () {
               size='full'
               onClick={signupHandler}
             >
-              Signup
+              Sign-in
             </Button>
             <div>
-              <span>Already have an account? </span>
-              <Link to='/signin' className='text-neutral-400 underline'>Login</Link>
+              <span>New user? </span>
+              <Link to='/signup' className='text-neutral-400 underline font-medium'>Signup</Link>
             </div>
           </CardFooter>
         </Card>
