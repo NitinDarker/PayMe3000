@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Card } from './components/ui/card'
 import Signup from './components/pages/Signup'
 import Signin from './components/pages/Signin'
+import Dashboard from './components/pages/Dashboard'
 
 function App () {
   return (
@@ -10,7 +11,7 @@ function App () {
         <Routes>
           <Route path='/signup' element={<Signup />} />
           <Route path='/signin' element={<Signin />} />
-          <Route path='/dashboard' element={<Card />} />
+          <Route path='/dashboard' element={<Dashboard />} />
           <Route path='/send' element={<Card />} />
         </Routes>
       </BrowserRouter>
