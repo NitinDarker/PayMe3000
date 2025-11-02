@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import axios from 'axios'
 import { DotBackgroundDemo } from '../ui/dotBackground'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Signup () {
   const [cred, setCred] = useState({
@@ -21,6 +21,7 @@ export default function Signup () {
     lastName: '',
     password: ''
   })
+  const navigate = useNavigate()
   async function signupHandler () {
     const payload = {
       ...cred,
@@ -30,7 +31,12 @@ export default function Signup () {
       'http://localhost:3000/api/user/signup',
       payload
     )
-    console.log(response.data.message)
+    if (response.data.success) {
+      localStorage.setItem('token', response.data.token)
+      navigate('/dashboard')
+    } else {
+      console.log(response.data.error)
+    }
   }
 
   function handleChange (e: React.ChangeEvent<HTMLInputElement>) {
@@ -101,7 +107,9 @@ export default function Signup () {
             </Button>
             <div>
               <span>Already have an account? </span>
-              <Link to='/signin' className='text-neutral-400 underline'>Login</Link>
+              <Link to='/signin' className='text-neutral-400 underline'>
+                Login
+              </Link>
             </div>
           </CardFooter>
         </Card>
