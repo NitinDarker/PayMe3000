@@ -17,7 +17,7 @@ export default async function signin(req: Request, res: Response) {
       });
     }
 
-    const passwordMatch = bcrypt.compare(password, foundUser!.password);
+    const passwordMatch = await bcrypt.compare(password, foundUser!.password);
     if (!passwordMatch) {
       return res.status(401).json({
         success: false,

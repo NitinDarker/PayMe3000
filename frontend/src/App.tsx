@@ -4,10 +4,12 @@ import Signup from './components/pages/Signup'
 import Signin from './components/pages/Signin'
 import Dashboard from './components/pages/Dashboard'
 import ProtectedRoute from './lib/protectedRoute'
+import { Toaster } from 'react-hot-toast'
 
 function App () {
   return (
     <>
+      <Toaster />
       <BrowserRouter>
         <Routes>
           <Route path='/signup' element={<Signup />} />

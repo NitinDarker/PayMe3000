@@ -12,6 +12,7 @@ import axios from 'axios'
 import { DotBackgroundDemo } from '../ui/dotBackground'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function Signup () {
   const [cred, setCred] = useState({
@@ -33,9 +34,11 @@ export default function Signup () {
     )
     if (response.data.success) {
       localStorage.setItem('token', response.data.token)
+      toast.success('hi')
       navigate('/dashboard')
     } else {
       console.log(response.data.error)
+      toast.error('ho')
     }
   }
 
@@ -45,6 +48,7 @@ export default function Signup () {
 
   return (
     <>
+      <Toaster />
       <DotBackgroundDemo>
         <Card className='w-md h-auto bg-neutral-900 text-white border-neutral-700'>
           <CardHeader>

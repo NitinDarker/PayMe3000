@@ -12,26 +12,31 @@ import axios from 'axios'
 import { DotBackgroundDemo } from '../ui/dotBackground'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 export default function Signin () {
   const [cred, setCred] = useState({
     username: '',
     password: ''
   })
-  async function signupHandler () {
+  const navigate = useNavigate()
+  async function signinHandler () {
     const payload = {
       ...cred
     }
-    const navigate = useNavigate()
-    const response = await axios.post(
-      'http://localhost:3000/api/user/signin',
-      payload
-    )
-    if (response.data.success) {
-      localStorage.setItem('token', response.data.token)
-      navigate('/dashboard')
-    } else {
-      console.log(response.data.error)
+    try {
+      const response = await axios.post(
+        'http://localhost:3000/api/user/signin',
+        payload
+      )
+      if (response.data.success) {
+        localStorage.setItem('token', response.data.token)
+        toast.success(response.data.message)
+        navigate('/dashboard')
+      }
+    } catch (e: any) {
+      const errMsg = e.response.data.error
+      toast.error(errMsg)
     }
   }
 
@@ -70,7 +75,7 @@ export default function Signin () {
               type='submit'
               variant='primary'
               size='full'
-              onClick={signupHandler}
+              onClick={signinHandler}
             >
               Sign-in
             </Button>
