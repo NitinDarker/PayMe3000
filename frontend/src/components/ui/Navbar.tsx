@@ -10,6 +10,7 @@ import {
   MobileNavMenu
 } from '@/components/ui/resizable-navbar'
 import { useState } from 'react'
+import Avatar from './Avatar'
 
 export function NavbarDemo () {
   const navItems = [
@@ -37,11 +38,11 @@ export function NavbarDemo () {
           <NavbarLogo />
           <NavItems items={navItems} />
           <div className='flex items-center gap-4'>
-            <NavbarButton variant='secondary'>Profile</NavbarButton>
-            <NavbarButton variant='primary'>Logout</NavbarButton>
+            <Avatar firstName='Nitin' lastName='sharma'/>
+            <NavbarButton variant='primary' >Logout</NavbarButton>
           </div>
         </NavBody>
-
+    
         {/* Mobile Navigation */}
         <MobileNav>
           <MobileNavHeader>
