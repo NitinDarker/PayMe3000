@@ -13,12 +13,14 @@ import { DotBackgroundDemo } from '../ui/dotBackground'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function Signin () {
   const [cred, setCred] = useState({
     username: '',
     password: ''
   })
+  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   async function signinHandler () {
     const payload = {
@@ -60,14 +62,24 @@ export default function Signin () {
                 onChange={handleChange}
               />
             </div>
-            <div>
+            <div className='relative'>
               <Label htmlFor='password'>Password</Label>
               <Input
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 id='password'
                 placeholder='Password'
                 onChange={handleChange}
               />
+              <Button
+                onClick={() => setShowPassword(!showPassword)}
+                className='absolute right-1 w-auto top-7 text-gray-400 hover:cursor-pointer hover:text-neutral-300 transition-all duration-200 h-auto'
+              >
+                {showPassword ? (
+                  <EyeOff size={18} strokeWidth={2} />
+                ) : (
+                  <Eye size={18} strokeWidth={2} />
+                )}
+              </Button>
             </div>
           </CardContent>
           <CardFooter className='flex flex-col gap-3 items-center justify-center'>
