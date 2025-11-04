@@ -19,21 +19,36 @@ export default function userAuth(
   try {
     const token = authHeader.split(" ")[1];
     if (!token) {
-      throw new Error("No token provided");
+      return res.status(401).json({
+        success: false,
+        error: "Token not provided.",
+      });
     }
 
     const payload = jwt.verify(token, jwtKey);
+
     if (typeof payload !== "object" || !payload.userId || !payload.username) {
-      console.log(payload);
-      throw new Error("Invalid token payload.");
+      console.error("Invalid JWT payload:", payload);
+      return res.status(401).json({
+        success: false,
+        error: "Invalid authentication token.",
+      });
     }
 
     req.id = payload.userId;
     req.username = payload.username;
 
     next();
-  } catch (e) {
-    console.log(e);
+  } catch (err: any) {
+    console.error("Auth error:", err.message);
+
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({
+        success: false,
+        error: "Your session has expired. Please log in again.",
+      });
+    }
+
     return res.status(401).json({
       success: false,
       message: "No Token or Invalid Token",
