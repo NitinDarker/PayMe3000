@@ -14,9 +14,9 @@ const goodUser = z.object({
     .max(30)
     .transform((s) => s.toLowerCase()),
   phone: z.number().min(10),
-  password: z.string().min(8, "Password must be at least 8 chars"),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
 });
 
 export default async function signup(req: Request, res: Response) {
@@ -27,14 +27,23 @@ export default async function signup(req: Request, res: Response) {
     console.error("Zod Validation Failed:", validateUser.error.format());
     return res.status(400).json({
       success: false,
-      error: `Bad user object`,
+      error: `Invalid input data.`,
     });
   }
 
   const { username, phone, password, firstName, lastName } = validateUser.data;
 
   try {
+    const existingUser = await userModel.findOne({ username });
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        error: "Username is already taken.",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = new userModel({
       username,
       phone,
@@ -44,9 +53,9 @@ export default async function signup(req: Request, res: Response) {
     });
     const user = await newUser.save();
 
-    console.log("User saved successfully, username: ", username);
+    console.log("User created:", username);
 
-    createAccount(user._id);
+    await createAccount(user._id);
 
     const token = jwt.sign(
       { userId: newUser._id, username: newUser.username },
@@ -55,20 +64,29 @@ export default async function signup(req: Request, res: Response) {
 
     return res.status(201).json({
       success: true,
-      message: "User created successfully",
+      message: `Welcome, ${firstName}!`,
       token: token,
     });
   } catch (e: any) {
     console.log("Signup error: ", e.errorResponse.errmsg);
-    if (e === "Cannot create user account") {
-      return res.status(400).json({
+
+    if (e.code === 11000) {
+      return res.status(409).json({
         success: false,
-        error: "Error while creating account",
+        error: "User with that username or phone number already exists.",
       });
     }
-    return res.status(400).json({
+
+    if (e.message?.includes("Cannot create user account")) {
+      return res.status(500).json({
+        success: false,
+        error: "Failed to create linked account. Please try again later.",
+      });
+    }
+
+    return res.status(500).json({
       success: false,
-      error: "User already exists",
+      error: "Something went wrong while signing up. Please try again later.",
     });
   }
 }

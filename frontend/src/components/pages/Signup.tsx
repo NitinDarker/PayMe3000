@@ -12,9 +12,12 @@ import axios from 'axios'
 import { DotBackgroundDemo } from '../ui/dotBackground'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function Signup () {
+  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
   const [cred, setCred] = useState({
     username: '',
     phone: Number(),
@@ -22,23 +25,43 @@ export default function Signup () {
     lastName: '',
     password: ''
   })
-  const navigate = useNavigate()
+
   async function signupHandler () {
     const payload = {
       ...cred,
       phone: Number(cred.phone)
     }
-    const response = await axios.post(
-      'http://localhost:3000/api/user/signup',
-      payload
+
+    if (!payload.username.trim()) return toast.error('Please enter a username.')
+    if (payload.username.trim().length < 3)
+      return toast.error('Username must be at least 3 characters long.')
+    if (!payload.phone)
+      return toast.error('Please enter a valid phone number.')
+    if (!/^\d{10}$/.test(payload.phone.toString()))
+      return toast.error('Phone number must be exactly 10 digits.')
+
+    if (!payload.firstName.trim())
+      return toast.error('Please enter your first name.')
+    if (!payload.lastName.trim())
+      return toast.error('Please enter your last name.')
+
+    if (!payload.password.trim()) return toast.error('Please set a password.')
+    if (payload.password.length < 8)
+      return toast.error('Password must be at least 8 characters long.')
+
+    const response = await toast.promise(
+      axios.post('http://localhost:3000/api/user/signup', payload),
+      {
+        loading: 'Creating your account...',
+        success: `Account created successfully!`,
+        error: err =>
+          err?.response?.data?.error || 'Signup failed. Please try again.'
+      }
     )
+
     if (response.data.success) {
       localStorage.setItem('token', response.data.token)
-      toast.success('hi')
-      navigate('/dashboard')
-    } else {
-      console.log(response.data.error)
-      toast.error('ho')
+      setTimeout(() => navigate('/dashboard'), 500)
     }
   }
 
@@ -48,7 +71,6 @@ export default function Signup () {
 
   return (
     <>
-      <Toaster />
       <DotBackgroundDemo>
         <Card className='w-md h-auto bg-neutral-900 text-white border-neutral-700'>
           <CardHeader>
@@ -64,12 +86,13 @@ export default function Signup () {
               />
             </div>
             <div>
-              <Label htmlFor='number'>Phone Number</Label>
+              <Label htmlFor='phone'>Phone Number</Label>
               <Input
                 id='phone'
-                placeholder='Phone'
+                placeholder='Phone Number'
                 onChange={handleChange}
-                type='number'
+                type='tel'
+                inputMode='numeric'
               />
             </div>
             <div className='grid grid-cols-2 gap-5'>
@@ -90,14 +113,25 @@ export default function Signup () {
                 />
               </div>
             </div>
-            <div>
+            <div className='relative'>
               <Label htmlFor='password'>Password</Label>
               <Input
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 id='password'
-                placeholder='Password'
+                placeholder='Enter your Password'
                 onChange={handleChange}
               />
+              <Button
+                onClick={() => setShowPassword(!showPassword)}
+                title={showPassword ? 'Hide password' : 'Show password'}
+                className='absolute right-1 w-auto top-7 text-gray-400 cursor-pointer hover:text-neutral-300 transition-all duration-200 h-auto'
+              >
+                {showPassword ? (
+                  <EyeOff size={18} strokeWidth={2} />
+                ) : (
+                  <Eye size={18} strokeWidth={2} />
+                )}
+              </Button>
             </div>
           </CardContent>
           <CardFooter className='flex flex-col gap-3 items-center justify-center'>
@@ -107,7 +141,7 @@ export default function Signup () {
               size='full'
               onClick={signupHandler}
             >
-              Signup
+              Sign Up
             </Button>
             <div>
               <span>Already have an account? </span>

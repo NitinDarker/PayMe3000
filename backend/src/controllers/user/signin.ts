@@ -8,6 +8,13 @@ export default async function signin(req: Request, res: Response) {
   const { username, password } = req.body;
 
   try {
+    if (!username || !password) {
+      return res.status(400).json({
+        success: false,
+        error: "Username and password are required.",
+      });
+    }
+
     const foundUser = await userModel.findOne({ username });
 
     if (!foundUser) {
@@ -31,14 +38,14 @@ export default async function signin(req: Request, res: Response) {
     );
     return res.status(200).json({
       success: true,
-      message: `Welcome ${username}`,
+      message: `Welcome back, ${username}`,
       token: token,
     });
   } catch (err) {
     console.log("Signin Error: ", err);
-    return res.status(404).json({
+    return res.status(500).json({
       success: false,
-      error: "Sigin failed",
+      error: "Something went wrong while signing in. Please try again later.",
     });
   }
 }

@@ -1,3 +1,12 @@
+import axios from 'axios'
+import toast from 'react-hot-toast'
+import { useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { DotBackgroundDemo } from '../ui/dotBackground'
+import { Link, useNavigate } from 'react-router-dom'
+import { Eye, EyeOff } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -5,32 +14,35 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import axios from 'axios'
-import { DotBackgroundDemo } from '../ui/dotBackground'
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import toast from 'react-hot-toast'
-import { Eye, EyeOff } from 'lucide-react'
 
 export default function Signin () {
+  const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
   const [cred, setCred] = useState({
     username: '',
     password: ''
   })
-  const [showPassword, setShowPassword] = useState(false)
-  const navigate = useNavigate()
+
   async function signinHandler () {
     const payload = {
       ...cred
     }
+
+    if (!payload.username) {
+      toast.error('Please enter a username')
+      return
+    }
+    if (!payload.password) {
+      toast.error('Please enter your password')
+      return
+    }
+
     try {
       const response = await axios.post(
         'http://localhost:3000/api/user/signin',
         payload
       )
+
       if (response.data.success) {
         localStorage.setItem('token', response.data.token)
         toast.success(response.data.message)
@@ -67,11 +79,12 @@ export default function Signin () {
               <Input
                 type={showPassword ? 'text' : 'password'}
                 id='password'
-                placeholder='Password'
+                placeholder='Enter your Password'
                 onChange={handleChange}
               />
               <Button
                 onClick={() => setShowPassword(!showPassword)}
+                title={showPassword ? 'Hide password' : 'Show password'}
                 className='absolute right-1 w-auto top-7 text-gray-400 hover:cursor-pointer hover:text-neutral-300 transition-all duration-200 h-auto'
               >
                 {showPassword ? (
@@ -89,7 +102,7 @@ export default function Signin () {
               size='full'
               onClick={signinHandler}
             >
-              Sign-in
+              Sign In
             </Button>
             <div>
               <span>New user? </span>
