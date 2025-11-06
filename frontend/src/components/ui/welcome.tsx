@@ -22,9 +22,9 @@ export default function Welcome () {
   }, [balance])
 
   return (
-    <div className='mb-4 mt-8 text-center text-3xl font-bold gap-4 flex flex-col justify-center'>
+    <div className='mb-4 mt-18 text-center text-3xl font-bold gap-4 flex flex-col justify-center'>
       <p>Welcome {name}</p>
-      <p>Your Balance: {balance}</p>
+      <p className='text-neutral-400'>Your Balance: ₹{balance/100}</p>
     </div>
   )
 }

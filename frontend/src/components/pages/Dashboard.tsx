@@ -1,16 +1,13 @@
+import AllUsers from '../ui/allUsers'
+import MyNavbar from '../ui/myNavbar'
 import Welcome from '../ui/welcome'
-import DummyContent from '../ui/dummyContent'
-import { NavbarDemo } from '../ui/Navbar'
 
 export default function Dashboard () {
-  
   return (
-    <>
-      <div className='bg-black text-white'>
-        <NavbarDemo />
-        <Welcome />
-        <DummyContent />
-      </div>
-    </>
+    <div className='w-full bg-black text-white min-h-screen'>
+      <MyNavbar />
+      <Welcome />
+      <AllUsers />
+    </div>
   )
 }
