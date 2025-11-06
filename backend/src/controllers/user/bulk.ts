@@ -2,12 +2,22 @@ import type { Request, Response } from "express";
 import { userModel } from "../../db/index.js";
 
 export default async function bulk(req: Request, res: Response) {
-  const filter = req.query.filter || "";
+  const filter = (req.query.filter as string) || "";
   try {
+    const searchRegex = new RegExp(filter, "i");
     const foundUsers = await userModel.find({
       $or: [
-        { firstName: { $regex: filter } },
-        { lastName: { $regex: filter } },
+        { firstName: searchRegex },
+        { lastName: searchRegex },
+        { username: searchRegex },
+        {
+          $expr: {
+            $regexMatch: {
+              input: { $toString: "$phone" }, // convert number → string
+              regex: filter,
+            },
+          },
+        },
       ],
     });
 
@@ -24,10 +34,10 @@ export default async function bulk(req: Request, res: Response) {
       })),
     });
   } catch (e) {
-    console.log(e);
-    return res.status(404).json({
+    console.error("Error in /bulk:", e);
+    return res.status(500).json({
       success: false,
-      error: "User not found",
+      error: "Failed to fetch users. Please try again.",
     });
   }
 }
