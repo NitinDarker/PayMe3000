@@ -3,6 +3,7 @@ import { Card } from './components/ui/card'
 import Signup from './components/pages/Signup'
 import Signin from './components/pages/Signin'
 import Dashboard from './components/pages/Dashboard'
+import Landing from './components/pages/Landing'
 import ProtectedRoute from './lib/protectedRoute'
 import { Toaster } from 'react-hot-toast'
 
@@ -12,6 +13,7 @@ function App () {
       <Toaster />
       <BrowserRouter>
         <Routes>
+          <Route path='/' element={<Landing />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/signin' element={<Signin />} />
           <Route

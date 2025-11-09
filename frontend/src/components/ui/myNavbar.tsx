@@ -11,8 +11,10 @@ import {
 } from '@/components/ui/resizable-navbar'
 import { useState } from 'react'
 import Avatar from './Avatar'
+import { useNavigate } from 'react-router-dom'
 
 export default function MyNavbar () {
+  const navigate = useNavigate()
   const navItems = [
     {
       name: 'Home',
@@ -28,6 +30,12 @@ export default function MyNavbar () {
     }
   ]
 
+  function logoutHandler () {
+    console.log('logout')
+    localStorage.removeItem('token')
+    navigate('/')
+  }
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
@@ -38,7 +46,9 @@ export default function MyNavbar () {
         <NavItems items={navItems} />
         <div className='flex items-center gap-4'>
           <Avatar firstName='Nitin' lastName='sharma' />
-          <NavbarButton variant='primary'>Logout</NavbarButton>
+          <NavbarButton variant='primary' onClick={logoutHandler}>
+            Logout
+          </NavbarButton>
         </div>
       </NavBody>
 
