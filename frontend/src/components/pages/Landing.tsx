@@ -43,7 +43,7 @@ const Landing = () => {
           </h1>
           {/* Subheading */}
           <p className='font-rubik mx-auto mb-8 max-w-3xl text-lg leading-relaxed text-zinc-500 md:text-2xl opacity-85'>
-            An experimental fintech dashboard that merges design 
+            An experimental fintech dashboard that merges design
             <br />
             precision with backend power.
           </p>
