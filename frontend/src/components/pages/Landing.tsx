@@ -80,6 +80,7 @@ const Landing = () => {
                 Sign In
               </div>
             </button>
+            
             {/* <button
               onClick={siginHandler}
               className='font-rubik transform cursor-pointer rounded-lg border-2 border-zinc-600 px-8 py-4 font-semibold text-zinc-300 transition-all duration-300 hover:scale-105 hover:border-blue-400 hover:text-blue-400 focus:outline-none'
