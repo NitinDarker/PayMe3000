@@ -35,8 +35,7 @@ export default function Signup () {
     if (!payload.username.trim()) return toast.error('Please enter a username.')
     if (payload.username.trim().length < 3)
       return toast.error('Username must be at least 3 characters long.')
-    if (!payload.phone)
-      return toast.error('Please enter a valid phone number.')
+    if (!payload.phone) return toast.error('Please enter a valid phone number.')
     if (!/^\d{10}$/.test(payload.phone.toString()))
       return toast.error('Phone number must be exactly 10 digits.')
 
