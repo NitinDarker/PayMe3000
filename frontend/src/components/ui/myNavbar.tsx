@@ -11,22 +11,23 @@ import {
 } from '@/components/ui/resizable-navbar'
 import { useState } from 'react'
 import Avatar from './Avatar'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
-export default function MyNavbar () {
+type MyNavbarProps = {
+  firstName?: string
+  lastName?: string
+}
+
+export default function MyNavbar ({ firstName, lastName }: MyNavbarProps) {
   const navigate = useNavigate()
   const navItems = [
     {
       name: 'Home',
-      link: '#features'
+      link: '/dashboard'
     },
     {
       name: 'Transactions',
-      link: '#pricing'
-    },
-    {
-      name: 'Friends',
-      link: '#contact'
+      link: '/transactions'
     }
   ]
 
@@ -45,7 +46,7 @@ export default function MyNavbar () {
         <NavbarLogo />
         <NavItems items={navItems} />
         <div className='flex items-center gap-4'>
-          <Avatar firstName='Nitin' lastName='sharma' />
+          <Avatar firstName={firstName || 'U'} lastName={lastName || ''} />
           <NavbarButton variant='primary' onClick={logoutHandler}>
             Logout
           </NavbarButton>
@@ -67,25 +68,21 @@ export default function MyNavbar () {
           onClose={() => setIsMobileMenuOpen(false)}
         >
           {navItems.map((item, idx) => (
-            <a
+            <Link
               key={`mobile-link-${idx}`}
-              href={item.link}
+              to={item.link}
               onClick={() => setIsMobileMenuOpen(false)}
               className='relative text-neutral-300'
             >
               <span className='block'>{item.name}</span>
-            </a>
+            </Link>
           ))}
           <div className='flex w-full flex-col gap-4'>
             <NavbarButton
-              onClick={() => setIsMobileMenuOpen(false)}
-              variant='primary'
-              className='w-full text-white'
-            >
-              Login
-            </NavbarButton>
-            <NavbarButton
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => {
+                setIsMobileMenuOpen(false)
+                logoutHandler()
+              }}
               variant='primary'
               className='w-full'
             >

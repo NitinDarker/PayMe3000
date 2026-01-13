@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { accountModel, transactionModel } from "../../db/index.js";
 
 export default async function transferMoney(req: Request, res: Response) {
@@ -58,8 +58,8 @@ export default async function transferMoney(req: Request, res: Response) {
     await transactionModel.create(
       [
         {
-          from: userId,
-          to: to,
+          from: new Types.ObjectId(userId),
+          to: new Types.ObjectId(to),
           amount: amount * 100,
         },
       ],

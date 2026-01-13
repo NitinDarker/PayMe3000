@@ -1,13 +1,15 @@
 import type { Request, Response } from "express";
+import { Types } from "mongoose";
 import { transactionModel } from "../../db/index.js";
 
 export default async function getHistory(req: Request, res: Response) {
   const userId = req.id;
+  const userObjectId = new Types.ObjectId(userId);
 
   try {
     const transactions = await transactionModel
       .find({
-        $or: [{ from: userId }, { to: userId }],
+        $or: [{ from: userObjectId }, { to: userObjectId }],
       })
       .populate("from", "username firstName lastName")
       .populate("to", "username firstName lastName")
@@ -17,13 +19,13 @@ export default async function getHistory(req: Request, res: Response) {
 
     return res.status(200).json({
       success: true,
-      data: transactions.map((t) => ({
+      data: transactions.map((t: any) => ({
         id: t._id,
         from: t.from,
         to: t.to,
         amount: t.amount,
         timestamp: t.timestamp,
-        type: String(t.from._id) === userId ? "sent" : "received",
+        type: t.from._id.toString() === userId ? "sent" : "received",
       })),
     });
   } catch (err) {

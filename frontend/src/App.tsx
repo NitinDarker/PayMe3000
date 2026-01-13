@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Card } from './components/ui/card'
 import Signup from './components/pages/Signup'
 import Signin from './components/pages/Signin'
 import Dashboard from './components/pages/Dashboard'
+import Transactions from './components/pages/Transactions'
 import Landing from './components/pages/Landing'
 import ProtectedRoute from './lib/protectedRoute'
 import { Toaster } from 'react-hot-toast'
@@ -24,7 +24,14 @@ function App () {
               </ProtectedRoute>
             }
           />
-          <Route path='/send' element={<Card />} />
+          <Route
+            path='/transactions'
+            element={
+              <ProtectedRoute>
+                <Transactions />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>
