@@ -50,7 +50,7 @@ export default function Signin () {
         navigate('/dashboard')
       }
     } catch (e: any) {
-      const errMsg = e.response.data.error
+      const errMsg = e.response?.data?.error || 'Sign in failed'
       toast.error(errMsg)
     }
   }

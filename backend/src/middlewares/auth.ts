@@ -12,7 +12,7 @@ export default function userAuth(
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
       success: false,
-      message: "No token or invalid token format.",
+      error: "No token or invalid token format.",
     });
   }
 
@@ -51,7 +51,7 @@ export default function userAuth(
 
     return res.status(401).json({
       success: false,
-      message: "No Token or Invalid Token",
+      error: "Invalid token",
     });
   }
 }
