@@ -35,7 +35,7 @@ export default function Dashboard () {
   return (
     <div className='w-full bg-black text-white min-h-screen'>
       <MyNavbar firstName={firstName} lastName={lastName} />
-      <Welcome name={`${firstName} ${lastName}`} balance={balance} />
+      <Welcome name={`${firstName} ${lastName}`} balance={balance} onBalanceUpdate={fetchUserData} />
       <AllUsers onTransferComplete={fetchUserData} />
     </div>
   )

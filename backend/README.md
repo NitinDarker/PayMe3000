@@ -45,5 +45,6 @@ npm run dev
 | POST | `/api/user/update` | Update profile | Yes |
 | GET | `/api/user/bulk?filter=` | Search users | Yes |
 | GET | `/api/account/balance` | Get balance | Yes |
+| POST | `/api/account/deposit` | Add money | Yes |
 | POST | `/api/account/transfer` | Send money | Yes |
 | GET | `/api/account/history` | Transaction history | Yes |
