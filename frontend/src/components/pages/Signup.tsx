@@ -49,7 +49,7 @@ export default function Signup () {
       return toast.error('Password must be at least 8 characters long.')
 
     const response = await toast.promise(
-      axios.post('http://localhost:3000/api/user/signup', payload),
+      axios.post('http://localhost:3001/api/user/signup', payload),
       {
         loading: 'Creating your account...',
         success: `Account created successfully!`,

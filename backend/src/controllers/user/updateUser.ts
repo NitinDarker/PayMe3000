@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import bcrypt from "bcrypt";
 import { userModel } from "../../db/index.js";
 
 export default async function update(req: Request, res: Response) {
@@ -14,7 +15,13 @@ export default async function update(req: Request, res: Response) {
   }
 
   if (password) {
-    foundUser.password = password;
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: "Password must be at least 8 characters",
+      });
+    }
+    foundUser.password = await bcrypt.hash(password, 10);
   }
   if (firstName) {
     foundUser.firstName = firstName;

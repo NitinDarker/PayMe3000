@@ -20,7 +20,7 @@ export default function ProtectedRoute ({
     }
 
     axios
-      .get('http://localhost:3000/api/user/me', {
+      .get('http://localhost:3001/api/user/me', {
         headers: {
           Authorization: `Bearer ${token}`
         }

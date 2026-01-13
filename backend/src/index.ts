@@ -8,7 +8,6 @@ dotenv.config({
 });
 
 import express, {
-  type ErrorRequestHandler,
   type NextFunction,
   type Request,
   type Response,
@@ -37,16 +36,16 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // Error Handling Middleware
 app.use(
   (
-    err: ErrorRequestHandler,
+    err: Error,
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-    res.status(500).send({
-      success: false,
-      error: "Sorry! We have encountered and error!\n" + err,
-    });
     console.error(err);
+    res.status(500).json({
+      success: false,
+      error: "Internal server error",
+    });
   }
 );
 

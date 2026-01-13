@@ -8,38 +8,53 @@ export default async function transferMoney(req: Request, res: Response) {
 
   const { to, amount } = req.body;
   const userId = req.id;
+
+  if (!to || !amount || typeof amount !== "number" || amount <= 0) {
+    await session.endSession();
+    return res.status(400).json({
+      success: false,
+      error: "Invalid transfer: recipient and positive amount required",
+    });
+  }
+
   try {
-    const fromAccount = await accountModel.findOne({ userId });
-    if (!fromAccount || fromAccount.balance! < amount*100) {
+    const fromAccount = await accountModel.findOne({ userId }).session(session);
+    if (!fromAccount || fromAccount.balance! < amount * 100) {
       await session.abortTransaction();
+      await session.endSession();
       return res.status(400).json({
         success: false,
         error: "Insufficient balance",
       });
     }
 
-    const toAccount = accountModel.find({ userId: to });
+    const toAccount = await accountModel.findOne({ userId: to }).session(session);
     if (!toAccount) {
+      await session.abortTransaction();
+      await session.endSession();
       return res.status(404).json({
         success: false,
-        message: "To User Account not found!",
+        error: "Recipient account not found",
       });
     }
 
     await accountModel
-      .updateOne({ userId }, { $inc: { balance: -(amount*100) } })
+      .updateOne({ userId }, { $inc: { balance: -(amount * 100) } })
       .session(session);
 
     await accountModel
-      .updateOne({ userId: to }, { $inc: { balance: +(amount*100) } })
+      .updateOne({ userId: to }, { $inc: { balance: +(amount * 100) } })
       .session(session);
 
     await session.commitTransaction();
+    await session.endSession();
     return res.status(200).json({
       success: true,
-      message: "Transction successful",
+      message: "Transaction successful",
     });
   } catch (e) {
+    await session.abortTransaction();
+    await session.endSession();
     console.log(e);
     return res.status(500).json({
       success: false,

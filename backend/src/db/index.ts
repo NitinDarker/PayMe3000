@@ -22,8 +22,8 @@ const userSchema = new Schema({
     type: Number,
     required: true,
     unique: true,
-    trim: true,
-    length: 10,
+    min: 1000000000,
+    max: 9999999999,
   },
   password: {
     type: String,
@@ -47,7 +47,7 @@ const userSchema = new Schema({
 const accountSchema = new Schema({
   balance: {
     type: Number,
-    require: true
+    required: true,
   },
   userId: {
     type: Schema.Types.ObjectId,

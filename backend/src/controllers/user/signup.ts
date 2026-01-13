@@ -68,9 +68,9 @@ export default async function signup(req: Request, res: Response) {
       token: token,
     });
   } catch (e: any) {
-    console.log("Signup error: ", e.errorResponse.errmsg);
+    console.log("Signup error: ", e?.message || e);
 
-    if (e.code === 11000) {
+    if (e?.code === 11000) {
       return res.status(409).json({
         success: false,
         error: "User with that username or phone number already exists.",

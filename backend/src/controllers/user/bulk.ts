@@ -13,8 +13,9 @@ export default async function bulk(req: Request, res: Response) {
         {
           $expr: {
             $regexMatch: {
-              input: { $toString: "$phone" }, // convert number → string
+              input: { $toString: "$phone" },
               regex: filter,
+              options: "i",
             },
           },
         },
