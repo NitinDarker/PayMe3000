@@ -52,11 +52,33 @@ const accountSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     ref: "user",
-    required: true
+    required: true,
+  },
+});
+
+const transactionSchema = new Schema({
+  from: {
+    type: Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
+  to: {
+    type: Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
   },
 });
 
 const userModel = model("user", userSchema);
 const accountModel = model("account", accountSchema);
+const transactionModel = model("transaction", transactionSchema);
 
-export { userModel, accountModel };
+export { userModel, accountModel, transactionModel };

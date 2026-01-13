@@ -1,14 +1,13 @@
 {
   "name": "PayTM backend",
   "version": "1.0.0",
+  "author": "Nitin Sharma",
   "description": "",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "npx tsc -b && node ./dist/index.js"
   },
-  "keywords": [],
-  "author": "Nitin Sharma",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",

@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import mongoose from "mongoose";
-import { accountModel } from "../../db/index.js";
+import { accountModel, transactionModel } from "../../db/index.js";
 
 export default async function transferMoney(req: Request, res: Response) {
   const session = await mongoose.startSession();
@@ -14,6 +14,14 @@ export default async function transferMoney(req: Request, res: Response) {
     return res.status(400).json({
       success: false,
       error: "Invalid transfer: recipient and positive amount required",
+    });
+  }
+
+  if (to === userId) {
+    await session.endSession();
+    return res.status(400).json({
+      success: false,
+      error: "Cannot transfer money to yourself",
     });
   }
 
@@ -45,6 +53,18 @@ export default async function transferMoney(req: Request, res: Response) {
     await accountModel
       .updateOne({ userId: to }, { $inc: { balance: +(amount * 100) } })
       .session(session);
+
+    // Save transaction history
+    await transactionModel.create(
+      [
+        {
+          from: userId,
+          to: to,
+          amount: amount * 100,
+        },
+      ],
+      { session }
+    );
 
     await session.commitTransaction();
     await session.endSession();

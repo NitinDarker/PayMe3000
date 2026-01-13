@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Eye, EyeOff } from 'lucide-react'
+import { API_URL } from '@/lib/config'
 
 export default function Signup () {
   const navigate = useNavigate()
@@ -49,7 +50,7 @@ export default function Signup () {
       return toast.error('Password must be at least 8 characters long.')
 
     const response = await toast.promise(
-      axios.post('http://localhost:3001/api/user/signup', payload),
+      axios.post(`${API_URL}/api/user/signup`, payload),
       {
         loading: 'Creating your account...',
         success: `Account created successfully!`,

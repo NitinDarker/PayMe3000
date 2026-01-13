@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { Send, Search, X } from 'lucide-react'
 import Avatar from './Avatar'
 import toast from 'react-hot-toast'
+import { API_URL } from '@/lib/config'
 
 type User = {
   _id: string
@@ -29,7 +30,7 @@ export default function AllUsers ({ onTransferComplete }: AllUsersProps) {
       setLoading(true)
       const token = localStorage.getItem('token')
       const response = await axios.get(
-        `http://localhost:3001/api/user/bulk?filter=${encodeURIComponent(
+        `${API_URL}/api/user/bulk?filter=${encodeURIComponent(
           search
         )}`,
         {
@@ -86,7 +87,7 @@ export default function AllUsers ({ onTransferComplete }: AllUsersProps) {
       setSending(true)
       const token = localStorage.getItem('token')
       const response = await axios.post(
-        'http://localhost:3001/api/account/transfer',
+        `${API_URL}/api/account/transfer`,
         { to: selectedUser._id, amount: numAmount },
         { headers: { Authorization: `Bearer ${token}` } }
       )

@@ -2,6 +2,7 @@ import axios from 'axios'
 import type React from 'react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { API_URL } from './config'
 
 export default function ProtectedRoute ({
   children
@@ -20,7 +21,7 @@ export default function ProtectedRoute ({
     }
 
     axios
-      .get('http://localhost:3001/api/user/me', {
+      .get(`${API_URL}/api/user/me`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

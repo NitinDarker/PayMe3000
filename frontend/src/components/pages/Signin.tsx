@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { DotBackgroundDemo } from '../ui/dotBackground'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
+import { API_URL } from '@/lib/config'
 import {
   Card,
   CardContent,
@@ -39,7 +40,7 @@ export default function Signin () {
 
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/user/signin',
+        `${API_URL}/api/user/signin`,
         payload
       )
 

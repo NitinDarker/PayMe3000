@@ -34,7 +34,8 @@ export default async function signin(req: Request, res: Response) {
 
     const token = jwt.sign(
       { userId: foundUser._id, username: foundUser.username },
-      jwtKey
+      jwtKey,
+      { expiresIn: "7d" }
     );
     return res.status(200).json({
       success: true,
