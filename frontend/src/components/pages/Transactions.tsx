@@ -3,6 +3,7 @@ import axios from 'axios'
 import { API_URL } from '@/lib/config'
 import { ArrowUpRight, ArrowDownLeft } from 'lucide-react'
 import MyNavbar from '../ui/myNavbar'
+import toast from 'react-hot-toast'
 
 type User = {
   _id: string
@@ -27,39 +28,62 @@ export default function Transactions() {
   const [lastName, setLastName] = useState('')
 
   useEffect(() => {
+    const controller = new AbortController()
     const token = localStorage.getItem('token')
+    let userDataLoaded = false
+    let historyLoaded = false
+
+    const checkLoadingComplete = () => {
+      if (userDataLoaded && historyLoaded) {
+        setLoading(false)
+      }
+    }
 
     const fetchUserData = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/user/me`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
+          signal: controller.signal
         })
         if (response.data.success) {
           setFirstName(response.data.data.firstName)
           setLastName(response.data.data.lastName)
         }
       } catch (err) {
-        console.error(err)
+        if (!axios.isCancel(err)) {
+          console.error(err)
+          toast.error('Failed to load user data')
+        }
+      } finally {
+        userDataLoaded = true
+        checkLoadingComplete()
       }
     }
 
     const fetchHistory = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/account/history`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
+          signal: controller.signal
         })
         if (response.data.success) {
           setTransactions(response.data.data)
         }
       } catch (err) {
-        console.error(err)
+        if (!axios.isCancel(err)) {
+          console.error(err)
+          toast.error('Failed to load transaction history')
+        }
       } finally {
-        setLoading(false)
+        historyLoaded = true
+        checkLoadingComplete()
       }
     }
 
     fetchUserData()
     fetchHistory()
+
+    return () => controller.abort()
   }, [])
 
   const formatDate = (dateStr: string) => {
