@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import {
   Navbar,
   NavBody,
@@ -8,10 +10,8 @@ import {
   MobileNavHeader,
   MobileNavToggle,
   MobileNavMenu
-} from '@/components/ui/resizable-navbar'
-import { useState } from 'react'
-import Avatar from './Avatar'
-import { useNavigate, Link } from 'react-router-dom'
+} from '@/components/ui/ResizableNavbar'
+import Avatar from '@/components/ui/Avatar'
 
 type MyNavbarProps = {
   firstName?: string
@@ -31,7 +31,7 @@ export default function MyNavbar ({ firstName, lastName }: MyNavbarProps) {
     }
   ]
 
-  function logoutHandler () {
+  function handleLogout () {
     console.log('logout')
     localStorage.removeItem('token')
     navigate('/')
@@ -47,7 +47,7 @@ export default function MyNavbar ({ firstName, lastName }: MyNavbarProps) {
         <NavItems items={navItems} />
         <div className='flex items-center gap-4'>
           <Avatar firstName={firstName || 'U'} lastName={lastName || ''} />
-          <NavbarButton variant='primary' onClick={logoutHandler}>
+          <NavbarButton variant='primary' onClick={handleLogout}>
             Logout
           </NavbarButton>
         </div>
@@ -81,7 +81,7 @@ export default function MyNavbar ({ firstName, lastName }: MyNavbarProps) {
             <NavbarButton
               onClick={() => {
                 setIsMobileMenuOpen(false)
-                logoutHandler()
+                handleLogout()
               }}
               variant='primary'
               className='w-full'

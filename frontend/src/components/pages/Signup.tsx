@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import axios from 'axios'
-import { DotBackgroundDemo } from '../ui/dotBackground'
+import { DotBackgroundDemo } from '@/components/ui/DotBackground'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
@@ -27,7 +27,7 @@ export default function Signup () {
     password: ''
   })
 
-  async function signupHandler () {
+  async function handleSignup () {
     const payload = {
       ...cred,
       phone: Number(cred.phone)
@@ -139,7 +139,7 @@ export default function Signup () {
               type='submit'
               variant='primary'
               size='full'
-              onClick={signupHandler}
+              onClick={handleSignup}
             >
               Sign Up
             </Button>

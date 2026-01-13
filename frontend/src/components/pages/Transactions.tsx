@@ -1,25 +1,10 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { API_URL } from '@/lib/config'
-import { ArrowUpRight, ArrowDownLeft } from 'lucide-react'
-import MyNavbar from '../ui/myNavbar'
 import toast from 'react-hot-toast'
-
-type User = {
-  _id: string
-  username: string
-  firstName: string
-  lastName: string
-}
-
-type Transaction = {
-  id: string
-  from: User
-  to: User
-  amount: number
-  timestamp: string
-  type: 'sent' | 'received'
-}
+import { ArrowUpRight, ArrowDownLeft } from 'lucide-react'
+import { API_URL } from '@/lib/config'
+import MyNavbar from '@/components/ui/MyNavbar'
+import type { Transaction } from '@/types'
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -137,8 +122,8 @@ export default function Transactions() {
                       {t.type === 'sent' ? 'Sent to ' : 'Received from '}
                       <span className='text-neutral-300'>
                         {t.type === 'sent'
-                          ? `${t.to.firstName} ${t.to.lastName}`
-                          : `${t.from.firstName} ${t.from.lastName}`}
+                          ? `${t.to.firstName || ''} ${t.to.lastName || ''}`.trim() || t.to.username
+                          : `${t.from.firstName || ''} ${t.from.lastName || ''}`.trim() || t.from.username}
                       </span>
                     </p>
                     <p className='text-sm text-neutral-500'>

@@ -1,17 +1,11 @@
+import { useEffect, useState, useCallback, useRef } from 'react'
 import axios from 'axios'
-import { useEffect, useState, useCallback } from 'react'
-import { Send, Search, X } from 'lucide-react'
-import Avatar from './Avatar'
 import toast from 'react-hot-toast'
+import { Send, Search, X } from 'lucide-react'
 import { API_URL } from '@/lib/config'
-
-type User = {
-  _id: string
-  username: string
-  phone?: string
-  firstName?: string
-  lastName?: string
-}
+import { Input } from '@/components/ui/input'
+import Avatar from '@/components/ui/Avatar'
+import type { User } from '@/types'
 
 type AllUsersProps = {
   onTransferComplete?: () => void
@@ -24,17 +18,20 @@ export default function AllUsers ({ onTransferComplete }: AllUsersProps) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [amount, setAmount] = useState('')
   const [sending, setSending] = useState(false)
+  const controllerRef = useRef<AbortController | null>(null)
 
   const fetchUsers = useCallback(async (search = '') => {
+    controllerRef.current?.abort()
+    controllerRef.current = new AbortController()
+
     try {
       setLoading(true)
       const token = localStorage.getItem('token')
       const response = await axios.get(
-        `${API_URL}/api/user/bulk?filter=${encodeURIComponent(
-          search
-        )}`,
+        `${API_URL}/api/user/bulk?filter=${encodeURIComponent(search)}`,
         {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
+          signal: controllerRef.current.signal
         }
       )
 
@@ -44,19 +41,21 @@ export default function AllUsers ({ onTransferComplete }: AllUsersProps) {
         setUsers([])
       }
     } catch (err) {
-      console.error(err)
-      setUsers([])
+      if (!axios.isCancel(err)) {
+        console.error(err)
+        toast.error('Failed to load users')
+        setUsers([])
+      }
     } finally {
       setLoading(false)
     }
   }, [])
 
-  // ✅ Fetch all initially
   useEffect(() => {
     fetchUsers()
+    return () => controllerRef.current?.abort()
   }, [fetchUsers])
 
-  // ✅ Debounced search effect
   useEffect(() => {
     const timeout = setTimeout(() => {
       fetchUsers(filter)
@@ -64,12 +63,12 @@ export default function AllUsers ({ onTransferComplete }: AllUsersProps) {
     return () => clearTimeout(timeout)
   }, [filter, fetchUsers])
 
-  const openSendModal = (user: User) => {
+  const handleOpenModal = (user: User) => {
     setSelectedUser(user)
     setAmount('')
   }
 
-  const closeSendModal = () => {
+  const handleCloseModal = () => {
     setSelectedUser(null)
     setAmount('')
   }
@@ -94,7 +93,7 @@ export default function AllUsers ({ onTransferComplete }: AllUsersProps) {
 
       if (response.data.success) {
         toast.success(`Sent ₹${numAmount} to ${selectedUser.firstName || selectedUser.username}`)
-        closeSendModal()
+        handleCloseModal()
         onTransferComplete?.()
       } else {
         toast.error(response.data.error || 'Transfer failed')
@@ -122,14 +121,14 @@ export default function AllUsers ({ onTransferComplete }: AllUsersProps) {
         <div className='relative w-md md:w-1/3'>
           <Search
             size={18}
-            className='absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500'
+            className='absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 z-10'
           />
-          <input
+          <Input
             type='text'
             value={filter}
             onChange={e => setFilter(e.target.value)}
             placeholder='Search users by name...'
-            className='w-full bg-neutral-900 border border-neutral-700 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-neutral-500'
+            className='w-full bg-neutral-900 pl-10 pr-4'
           />
         </div>
       </div>
@@ -159,17 +158,17 @@ export default function AllUsers ({ onTransferComplete }: AllUsersProps) {
 
                     <div>
                       <p className='text-lg font-medium'>
-                        {u.firstName} {u.lastName}
+                        {`${u.firstName || ''} ${u.lastName || ''}`.trim() || u.username}
                       </p>
                       <p className='text-sm text-neutral-400'>@{u.username}</p>
                       <p className='text-sm text-neutral-500'>
-                        📞 {u.phone || 'No phone'}
+                        {u.phone || 'No phone'}
                       </p>
                     </div>
                   </div>
 
                   <button
-                    onClick={() => openSendModal(u)}
+                    onClick={() => handleOpenModal(u)}
                     className='flex items-center gap-2 bg-blue-600 hover:bg-blue-800 py-2 px-4 rounded-lg font-medium transition-all cursor-pointer duration-150'
                   >
                     <Send size={16} />
@@ -188,12 +187,12 @@ export default function AllUsers ({ onTransferComplete }: AllUsersProps) {
 
       {/* Send Money Modal */}
       {selectedUser && (
-        <div className='fixed inset-0 bg-black/60 flex items-center justify-center z-50'>
+        <div className='fixed inset-0 bg-black/70 flex items-center justify-center z-50'>
           <div className='bg-neutral-900 border border-neutral-700 rounded-xl p-6 w-full max-w-md mx-4'>
             <div className='flex justify-between items-center mb-4'>
               <h2 className='text-xl font-semibold'>Send Money</h2>
               <button
-                onClick={closeSendModal}
+                onClick={handleCloseModal}
                 className='text-neutral-400 hover:text-white transition-colors'
               >
                 <X size={20} />
@@ -219,21 +218,21 @@ export default function AllUsers ({ onTransferComplete }: AllUsersProps) {
               <label className='block text-sm text-neutral-400 mb-2'>
                 Amount (₹)
               </label>
-              <input
+              <Input
                 type='number'
                 value={amount}
                 onChange={e => setAmount(e.target.value)}
                 placeholder='Enter amount'
-                min='1'
-                step='0.01'
-                className='w-full bg-neutral-800 border border-neutral-700 rounded-lg py-3 px-4 text-lg focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-neutral-500'
+                min={1}
+                step={0.01}
+                className='w-full bg-neutral-800 py-3 text-lg'
                 autoFocus
               />
             </div>
 
             <div className='flex gap-3'>
               <button
-                onClick={closeSendModal}
+                onClick={handleCloseModal}
                 className='flex-1 py-3 px-4 border border-neutral-700 rounded-lg font-medium hover:bg-neutral-800 transition-colors'
               >
                 Cancel

@@ -1,10 +1,10 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import axios from 'axios'
-import AllUsers from '../ui/allUsers'
-import MyNavbar from '../ui/myNavbar'
-import Welcome from '../ui/welcome'
-import { API_URL } from '@/lib/config'
 import toast from 'react-hot-toast'
+import { API_URL } from '@/lib/config'
+import AllUsers from '@/components/ui/AllUsers'
+import MyNavbar from '@/components/ui/MyNavbar'
+import Welcome from '@/components/ui/Welcome'
 
 export default function Dashboard () {
   const [balance, setBalance] = useState(0)

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { DotBackgroundDemo } from '../ui/dotBackground'
+import { DotBackgroundDemo } from '@/components/ui/DotBackground'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff } from 'lucide-react'
 import { API_URL } from '@/lib/config'
@@ -24,7 +24,7 @@ export default function Signin () {
     password: ''
   })
 
-  async function signinHandler () {
+  async function handleSignin () {
     const payload = {
       ...cred
     }
@@ -101,7 +101,7 @@ export default function Signin () {
               type='submit'
               variant='primary'
               size='full'
-              onClick={signinHandler}
+              onClick={handleSignin}
             >
               Sign In
             </Button>

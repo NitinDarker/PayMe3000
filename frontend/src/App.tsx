@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Signup from './components/pages/Signup'
-import Signin from './components/pages/Signin'
-import Dashboard from './components/pages/Dashboard'
-import Transactions from './components/pages/Transactions'
-import Landing from './components/pages/Landing'
-import ProtectedRoute from './lib/protectedRoute'
 import { Toaster } from 'react-hot-toast'
+import Landing from '@/components/pages/Landing'
+import Signup from '@/components/pages/Signup'
+import Signin from '@/components/pages/Signin'
+import Dashboard from '@/components/pages/Dashboard'
+import Transactions from '@/components/pages/Transactions'
+import ProtectedRoute from '@/lib/ProtectedRoute'
 
 function App () {
   return (

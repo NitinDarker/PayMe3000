@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom'
 const Landing = () => {
   const navigate = useNavigate()
 
-  const signupHandler = () => {
+  const handleSignup = () => {
     navigate('/signup')
   }
 
-  const siginHandler = () => {
+  const handleSignin = () => {
     navigate('/signin')
   }
 
@@ -65,14 +65,14 @@ const Landing = () => {
           <div className='flex flex-col items-center justify-center gap-4 sm:flex-row'>
                
             <button
-              onClick={signupHandler}
+              onClick={handleSignup}
               className='font-rubik transform cursor-pointer rounded-lg bg-blue-500 px-8 py-4 font-semibold text-white shadow-[0_0_20px_rgba(74,222,128,0.3)] transition-all duration-300 hover:scale-105 hover:bg-blue-600 hover:shadow-[0_0_30px_rgba(74,222,128,0.5)] focus:outline-none'
             >
               Sign Up
             </button>
              
             <button
-              onClick={siginHandler}
+              onClick={handleSignin}
               className='p-[3px] relative hover:cursor-pointer font-rubik '
             >
               <div className='absolute inset-0 bg-linear-to-r from-violet-500 to-sky-300 rounded-lg' />
@@ -82,7 +82,7 @@ const Landing = () => {
             </button>
             
             {/* <button
-              onClick={siginHandler}
+              onClick={handleSignin}
               className='font-rubik transform cursor-pointer rounded-lg border-2 border-zinc-600 px-8 py-4 font-semibold text-zinc-300 transition-all duration-300 hover:scale-105 hover:border-blue-400 hover:text-blue-400 focus:outline-none'
             >
               Learn More
